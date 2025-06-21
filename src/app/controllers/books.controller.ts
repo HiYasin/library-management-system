@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Book } from '../models/book.model';
-import { Error } from 'mongoose';
-import { IBook, IBookQueryParams } from '../interfaces/book.interface';
+import {  IBookQueryParams } from '../interfaces/book.interface';
 
 export const bookRouter = express.Router();
 
@@ -24,13 +23,7 @@ bookRouter.post('/', async (req: Request, res: Response) => {
 })
 
 bookRouter.get('/', async (req: Request, res: Response) => {
-    // console.log('Query Parameters:', req.query);
-
-    // const { filter , sortBy, sort, limit = 10 } = req.query;
-    // const filterObject = filter as keyof IBook["genre"] ? { genre: filter } : {};
-    // const sortObject = sortBy && sort ? { [sortBy as keyof IBook]: sort as 'asc'|'desc' } : {};
-
-    const { filter, sortBy, sort, limit }: IBookQueryParams = req.query
+    const { filter, sortBy, sort, limit=10}: IBookQueryParams = req.query
 
     try {
         const books = await Book.find(filter ? { genre: filter } : {}).sort(sortBy && sort ? { sortBy: sort } : {}).limit(Number(limit));
@@ -64,6 +57,7 @@ bookRouter.get('/:bookId', async (req: Request, res: Response) => {
         });
     }
 });
+
 bookRouter.delete('/:bookId', async (req: Request, res: Response) => {
     try {
         const deletedBook = await Book.findByIdAndDelete(req.params.bookId);
@@ -80,7 +74,6 @@ bookRouter.delete('/:bookId', async (req: Request, res: Response) => {
         });
     }
 });
-
 
 bookRouter.put('/:bookId', async (req: Request, res: Response) => {
     try {
