@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { Book } from '../models/book.model';
 import { Error } from 'mongoose';
+import { IBook, IBookQueryParams } from '../interfaces/book.interface';
 
 export const bookRouter = express.Router();
 
@@ -23,8 +24,16 @@ bookRouter.post('/', async (req: Request, res: Response) => {
 })
 
 bookRouter.get('/', async (req: Request, res: Response) => {
+    console.log('Query Parameters:', req.query);
+
+    // const { filter , sortBy, sort, limit = 10 } = req.query;
+    // const filterObject = filter as keyof IBook["genre"] ? { genre: filter } : {};
+    // const sortObject = sortBy && sort ? { [sortBy as keyof IBook]: sort as 'asc'|'desc' } : {};
+
+    const { filter, sortBy, sort, limit = 2 }: IBookQueryParams = req.query
+
     try {
-        const books = await Book.find();
+        const books = await Book.find(filter?{ genre: filter }:{}).sort(sortBy&&sort?{sortBy:sort}:{}).limit(Number(limit));
         res.status(200).json({
             success: true,
             message: 'Books retrieved successfully',

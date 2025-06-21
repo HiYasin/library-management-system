@@ -7,3 +7,10 @@ export interface IBook {
     copies: number;
     available: boolean;
 }
+
+export interface IBookQueryParams {
+    filter?: IBook['genre'];
+    sortBy?: keyof IBook;
+    sort?: 'asc' | 'desc';
+    limit?: number | string;
+}
