@@ -84,22 +84,23 @@ bookRouter.delete('/:bookId', async (req: Request, res: Response) => {
 
 bookRouter.put('/:bookId', async (req: Request, res: Response) => {
     try {
-        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId, req.body, { new: true });
+        const book = await Book.findById(req.params.bookId);
 
-        if (!updatedBook) {
+        if (!book) {
             res.status(404).json({
                 success: false,
                 message: 'Book not found',
-                data: updatedBook
+                data: book
             });
         } else {
+            book.set(req.body);
+            const updatedBook = await book.save();
             res.status(200).json({
                 success: true,
                 message: 'Book updated successfully',
                 data: updatedBook
             });
         }
-        // updatedBook.set(req.body);
     } catch (error) {
         res.status(500).json({
             success: false,
