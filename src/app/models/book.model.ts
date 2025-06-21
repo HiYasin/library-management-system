@@ -35,7 +35,10 @@ const bookSchema = new Schema<IBook>({
     available: {
         type: Boolean,
         default: true
-    }
+    },
+}, {
+    timestamps: true,
+    versionKey: false
 })
 
 export const Book = model<IBook>("Book", bookSchema);
