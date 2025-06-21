@@ -14,3 +14,7 @@ export interface IBookQueryParams {
     sort?: 'asc' | 'desc';
     limit?: number | string;
 }
+
+export interface BookInstanceMethods{
+    borrowBooks(borrowQuantity: number): void;
+}
