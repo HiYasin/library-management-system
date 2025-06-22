@@ -3,6 +3,7 @@ import cors from 'cors';
 import { bookRouter } from './app/controllers/books.controller';
 import { borrowRouter } from './app/controllers/borrow.controller';
 import { unknownRouteHandler } from './app/middlewares/unknownRoute.handler';
+import { globalErrorHandler } from './app/middlewares/error.middleware';
 
 const app: Application = express();
 
@@ -20,5 +21,6 @@ app.use('/api/books', bookRouter);
 app.use('/api/borrow', borrowRouter);
 
 app.use(unknownRouteHandler);
+app.use(globalErrorHandler);
 
 export default app;
