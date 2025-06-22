@@ -1,9 +1,9 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { Borrow } from '../models/borrow.model';
 import { Book } from '../models/book.model';
 export const borrowRouter = express.Router();
 
-borrowRouter.get('/', async (req: Request, res: Response) => {
+borrowRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const borrows = await Borrow.aggregate([
             { $group: { _id: '$book', totalQuantity: { $sum: '$quantity' } } },
@@ -22,8 +22,7 @@ borrowRouter.get('/', async (req: Request, res: Response) => {
                     totalQuantity: 1 
                 }
             },
-            { $unwind: '$book' },
-            { $sort: { totalQuantity: -1 } },
+            { $unwind: '$book' }
 
         ]);
         res.status(200).json({
@@ -32,34 +31,33 @@ borrowRouter.get('/', async (req: Request, res: Response) => {
             data: borrows
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error retrieving borrow books summary',
-            error
-        });
+        next(error);
     }
 });
 
-borrowRouter.post('/', async (req: Request, res: Response) => {
+borrowRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     const borrowData = req.body;
-    const { book, quantity, dueDate } = borrowData;
+    const { book, quantity } = borrowData;
     try {
-        // Validate book availability
         const bookRecord = await Book.findById(book);
         if (!bookRecord) {
             res.status(404).json({
                 success: false,
-                message: 'Book not found'
+                message: 'Book not found',
+                data: null
             });
             return;
         }
+
         if (!bookRecord.available || bookRecord.copies < quantity) {
             res.status(400).json({
                 success: false,
-                message: 'Not enough copies available to borrow'
+                message: 'Not enough copies available to borrow',
+                data: null
             });
             return;
         }
+
         bookRecord.borrowBooks(quantity);
         await bookRecord.save();
 
@@ -72,11 +70,7 @@ borrowRouter.post('/', async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error borrowing book',
-            error
-        });
+        next(error);
     }
 });
 

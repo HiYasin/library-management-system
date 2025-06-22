@@ -48,8 +48,6 @@ bookSchema.methods.borrowBooks = function (borrowQuantity: number): void {
         if (this.copies === 0) {
             this.available = false;
         }
-    } else {
-        throw new Error("Not enough copies available to borrow.");
     }
 };
 
