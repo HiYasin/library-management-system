@@ -2,6 +2,8 @@
 
 A RESTful API server for managing a library system, built with Express.js, TypeScript, and Mongoose.
 
+**Live Demo**: [https://library-management-server-faisal.vercel.app/](https://library-management-server-faisal.vercel.app/)
+
 ## Features
 - Add, update, retrieve, and delete books
 - Filter, sort, and paginate book listings
