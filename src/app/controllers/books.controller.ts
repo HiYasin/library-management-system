@@ -25,7 +25,7 @@ bookRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     } else if (sortBy && !['title', 'author', 'genre', 'isbn', 'description', 'copies', 'available', 'createdAt', 'updatedAt'].includes(sortBy)) {
         throw new Error('Invalid sortBy field provided');
     }
-    console.log('Query Parameters:', req.query);
+    // console.log('Query Parameters:', req.query);
     try {
         const books = await Book.find(filter ? { genre: filter } : {}).sort(sortBy && sort ? { [sortBy]: sort } : {}).limit(Number(limit));
         res.status(200).json({
